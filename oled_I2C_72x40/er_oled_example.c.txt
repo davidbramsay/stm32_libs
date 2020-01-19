@@ -1,0 +1,69 @@
+// This was written for the 0.42" buydisplay OLED screen, 72x40
+// Plugs in using just I2C.
+// Sometimes it gets in a wierd state and RESET (pin 10) needs to get pulled low.
+
+// Right now it's polling mode only; this could be improved for non-blocking.
+
+// fontsizes available for any letter are (8x)12 and (8x)16
+// fonts for numbers and ':' also include (16x)32
+
+// can delete some of the sample bitmap images in er_led.h to save space.
+
+  #include "main.h"
+  #include "i2c.h"
+  #include "er_oled.h"
+
+  main() {
+
+    HAL_Init();
+    SystemClock_Config();
+    MX_I2C1_Init();
+
+
+    uint8_t oled_buf[WIDTH * HEIGHT / 8];
+    er_oled_begin();
+
+    er_oled_clear(oled_buf);
+    er_oled_bitmap(0, 0, PIC1, 72, 40, oled_buf);
+    er_oled_display(oled_buf);
+    HAL_Delay(3000);
+    command(0xa7);//--set Negative display
+    HAL_Delay(3000);
+    command(0xa6);//--set normal display
+
+    er_oled_clear(oled_buf);
+    er_oled_bitmap(0, 0, PIC2, 72, 40, oled_buf);
+    er_oled_display(oled_buf);
+    HAL_Delay(3000);
+
+    command(0xa7);//--set Negative display
+    HAL_Delay(3000);
+    command(0xa6);//--set normal display
+
+    er_oled_clear(oled_buf);
+
+    /* display images of bitmap matrix */
+
+    er_oled_bitmap(0, 0, Signal816, 16, 8, oled_buf);
+    er_oled_bitmap(24, 0,Bluetooth88, 8, 8, oled_buf);
+    er_oled_bitmap(40, 0, Msg816, 16, 8, oled_buf);
+    er_oled_bitmap(64, 0, GPRS88, 8, 8, oled_buf);
+
+    er_oled_char(0, 14, '1' ,12, 1, oled_buf);
+    er_oled_char(9, 14, '2', 12, 1, oled_buf);
+    er_oled_char(18, 14, ':', 12, 1, oled_buf);
+    er_oled_char(27, 14, '0', 12, 1, oled_buf);
+    er_oled_char(36, 14, '6', 12, 1, oled_buf);
+    er_oled_char(45, 14, ':', 12, 1, oled_buf);
+    er_oled_char(54, 14, '1', 12, 1, oled_buf);
+    er_oled_char(63, 14, '8', 12, 1, oled_buf);
+
+    er_oled_string(6, 28, "dramsay", 12, 1, oled_buf);
+    er_oled_display(oled_buf);
+
+    HAL_Delay(3000);
+
+    er_oled_time("1743");
+
+    while(1){}
+}
