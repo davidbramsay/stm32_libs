@@ -1,0 +1,48 @@
+(1) BATTERY POLARITY should be reversed given the batteries I have for the PH2 connector.
+Made explicit whether it's adafruit style or not.
+
+(2) I2C Screen is working well-- need to be able to hit the reset on it maybe.  Expose reset pin and maybe make it usable by MCU
+
+(3) pullups don't seem to be required, at least for screen.
+
+(4) Label for header connecting LED pins (clock and data) not labeled well.
+
+BUTTONS
+
+buttons working. Internal pull ups required.
+HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_1)
+
+VIBRATION MOTOR
+
+PWM working -- need to set up TIM and CH in CUBE, including the counter (100) and time_divs (4).
+Set the output pin to match that TIM_CH (here we use timer 3 and channel 2).
+HAL_TIM_Base_Start_IT(&htim3);
+HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+int duty_cycle = 0;
+htim3.Instance->CCR2 = duty_cycle;
+duty_cycle = (duty_cycle+1)%80;
+HAL_Delay(500);
+
+OLED SCREEN
+
+working with included libraries.  Could breakout reset pin (definitely should for easy access)
+Doesn't need 3.7V to work.  
+Right now the I2C communication is done in polling mode and with
+individual commands broken out for setup; this could be accelerated by batching all
+commands and using an interrupt based approach.
+
+LEDS
+
+working with DotStar arduino library.  Ported over.  Works with 3.7V rail and 3.3V logic.
+
+SPI seems quite slow, should be much faster if we use larger buffers.  Right now it's one byte at a time.
+Clock could be up to 8MHz no problem and is at 1MHz at the moment.
+
+
+
+POWER
+
+TOUCH
+
+
+PSoC programming worked 

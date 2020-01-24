@@ -1,0 +1,44 @@
+// can go up to 8MHz
+// SPI, MODE0, MSB First (CPOL 0, PHASE 1EDGE)
+// could be sped up by batching SPI writes, move to non-blocking
+
+#include "dotstar.h"
+#define NUM_PIXELS 4
+
+int main(void)
+{
+  HAL_Init();
+  MX_SPI3_Init();
+
+  DotStar_InitHandle dotstar;
+  dotstar.spiHandle = &hspi3;
+  dotstar.numLEDs = NUM_PIXELS;
+  dotstar.colorOrder = DOTSTAR_BGR;
+  Dotstar_Init(&dotstar);
+
+  ds_clear();  //turn off
+  ds_show();
+
+  ds_setBrightness(20);
+  HAL_Delay(3000);
+
+  int head = 0;
+  uint32_t color = 0xFF0000;
+  int delay = 0;
+
+  while (1)
+  {
+	  ds_setPixelColor32B(head, color); // 'On' pixel at head
+	  ds_show();                     // Refresh strip
+
+	  HAL_Delay(delay++);
+	  if (delay>200) delay=0;
+
+	  if(++head >= NUM_PIXELS) {         // Increment head index.  Off end of strip?
+	     head = 0;                       //  Yes, reset head index to start
+	     if((color >>= 8) == 0)          //  Next color (R->G->B) ... past blue now?
+	       color = 0xFF0000;             //   Yes, reset to red
+	  }
+  }
+
+
