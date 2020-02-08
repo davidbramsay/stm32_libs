@@ -1,0 +1,78 @@
+#include <Wire.h>
+
+void print_counts(){
+  Wire.beginTransmission(0x44);
+  Wire.write(0x06); 
+  Wire.endTransmission(false); 
+  Wire.requestFrom(0x44, 8); 
+  while(Wire.available()){
+    uint8_t c = Wire.read();
+    Serial.print(c, HEX);
+    Serial.print(" ");    
+  }
+  Serial.println("");
+  Wire.endTransmission();
+}
+
+uint8_t read_IQS263(uint8_t addr) {
+  uint8_t c;
+  Wire.beginTransmission(0x44);//start to 0x88, write register to read
+  Wire.write(addr); 
+  Wire.endTransmission(false); //send stop bit, keep line open
+  Wire.requestFrom(0x44, 1); //send read command to address (0x89), read then ack
+  while(Wire.available()){
+    c = Wire.read();
+  }
+  Wire.endTransmission();
+  return c;
+}
+
+void write_IQS263(uint8_t addr, uint8_t* tx_bytes, uint8_t size) {
+  uint8_t c;
+  Wire.beginTransmission(0x44);//start to 0x88, write register to read
+  Wire.write(addr); 
+  for (uint8_t i=0; i<size;i++){
+    Wire.write(tx_bytes[i]);
+  }
+  Wire.endTransmission(false);
+}
+
+
+void setup() {
+  
+  Wire.begin();
+  Serial.begin(9600);
+
+  delay(1000); 
+  
+  while(read_IQS263(0x00) != 0x3C){ //0x00 should give us back 0x3C, the product number
+    Serial.println("Failed to identify IQS263...");
+  }
+  Serial.println("Read 0x3C product code from 0x00 Register.");
+
+  uint8_t data_buff[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
+  
+  Serial.println(read_IQS263(0x0D), HEX);
+  data_buff[0]=0x0E;
+  while(read_IQS263(0x0D) != 0x0E){
+    write_IQS263(0x0D, data_buff, 1); //set active channels
+    Serial.println("0x0D not set to 0x0E...");
+  }
+  Serial.println("0x0D set to 0x0E.");
+
+  delay(1000);
+  
+  data_buff[0]=0x00;
+  data_buff[1]=0b00001001;
+  data_buff[2]=0x00;
+  data_buff[3]=0x00;
+  data_buff[4]=0x00;
+  write_IQS263(0x09, data_buff, 5); //prox settings
+  
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  print_counts();
+  delay(100);
+}
