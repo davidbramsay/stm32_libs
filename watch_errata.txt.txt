@@ -14,6 +14,8 @@ HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_1)
 
 VIBRATION MOTOR
 
+Counter Period = 100, Internal Clock Division 4
+
 PWM working -- need to set up TIM and CH in CUBE, including the counter (100) and time_divs (4).
 Set the output pin to match that TIM_CH (here we use timer 3 and channel 2).
 HAL_TIM_Base_Start_IT(&htim3);

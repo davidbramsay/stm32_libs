@@ -9,7 +9,11 @@ EastRising Technology Co.,LTD
 #define _er_oled_H_
 
 #include "stdio.h"
+#include "stm32wbxx_hal.h"
 
+// EDIT THIS TO BE THE I2C INTERFACE YOU'RE USING
+// ALSO MAKE SURE THAT OLED_RESET IS SET HIGH
+extern I2C_HandleTypeDef hi2c1;
 #define ER_OLED_I2C_PORT hi2c1
 
 #define WIDTH 72
@@ -36,6 +40,8 @@ void er_oled_char3216(uint8_t x, uint8_t y, uint8_t chChar, uint8_t* buffer);
 void er_oled_string(uint8_t x, uint8_t y, const char *pString, uint8_t Size, uint8_t Mode, uint8_t* buffer);
 void I2C_Write_Byte(uint8_t value, uint8_t Cmd);
 void er_oled_time(const char *pString);
+void er_oled_print_2digit(int value);
+void er_oled_print_3digit(int value);
 
 static const uint8_t PIC1[] =
 {

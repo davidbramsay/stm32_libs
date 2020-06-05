@@ -2,6 +2,8 @@
 // SPI, MODE0, MSB First (CPOL 0, PHASE 1EDGE)
 // could be sped up by batching SPI writes, move to non-blocking
 
+//motorola, 8 bits, MSB first, 2, CPOL low, 1 edge
+
 #include "dotstar.h"
 #define NUM_PIXELS 4
 

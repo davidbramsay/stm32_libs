@@ -6,8 +6,8 @@ EastRising Technology Co.,LTD
 ****************************************************/
 
 #include "er_oled.h"
-#include "i2c.h"
-#include "stm32l1xx_hal.h"
+//#include "stm32wbxx_hal_i2c.h"
+//#include "stm32wbxx_hal.h"
 
 
 void I2C_Write_Byte(uint8_t value, uint8_t Cmd)
@@ -236,3 +236,24 @@ void er_oled_time(const char *pString)
 	er_oled_display(oled_buf);
 }
 
+void er_oled_print_2digit(int value){
+  uint8_t oled_buf[WIDTH * HEIGHT / 8] = {0};
+  char c = (char) ( ((int) '0') + (value % 10));
+  char d = (char) ( ((int) '0') + (value / 10));
+  er_oled_char(27, 14, d, 12, 1, oled_buf);
+  er_oled_char(36, 14, c, 12, 1, oled_buf);
+  er_oled_display(oled_buf);
+
+}
+
+void er_oled_print_3digit(int value){
+  uint8_t oled_buf[WIDTH * HEIGHT / 8] = {0};
+  char c = (char) ( ((int) '0') + (value % 10));
+  char d = (char) ( ((int) '0') + ((value % 100) / 10));
+  char e = (char) ( ((int) '0') + (value / 100));
+  er_oled_char(27, 14, e, 12, 1, oled_buf);
+  er_oled_char(36, 14, d, 12, 1, oled_buf);
+  er_oled_char(45, 14, c, 12, 1, oled_buf);
+  er_oled_display(oled_buf);
+
+}
