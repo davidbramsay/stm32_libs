@@ -44,6 +44,8 @@ Clock could be up to 8MHz no problem and is at 1MHz at the moment.
 
 POWER
 
+No power protection circuitry, use Power Voltage Detector (in CubeMX under SYS) with a n Analog GPIO pin.
+
 TOUCH
 
 
