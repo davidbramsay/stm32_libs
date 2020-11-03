@@ -44,9 +44,25 @@ Clock could be up to 8MHz no problem and is at 1MHz at the moment.
 
 POWER
 
-No power protection circuitry, use Power Voltage Detector (in CubeMX under SYS) with a n Analog GPIO pin.
+No power protection circuitry, use Power Voltage Detector PVD (in CubeMX under SYS) with a n Analog GPIO pin.  Check if this will allow us to go into sleep while preserving data?
+
+PVD highest threshold is ~3.00 or 3.05 V.  PVD works on VDD/VDDA, we care about VBAT.  As VBAT drops below 3.3 we obviously expect VDD to drop too.
+
+Charged LIPO should be 4.2-3.0 at bare min, ideally cut off at ~3.3v to allow for sleeping. 
+Microcontroller works down to 1.8V.
+LDO will dropout around 3.3V and start tracking input voltage (direct to battery).
+
+Can (1) hook up to PVD, this is roughly okay.  Entering sleep at this point and the MCU will stay awake until the lipo is completely dead since it operates at 1.8V. 
+
+STM32WB STOP 2 Mode (full memory retention) or Standby + 32kB Ram Memory retention run at ~2 uA or ~0.5 uA.  There are obviously many other sources of idle power bleed, but if we assume a drop dead 2.7V that's 
+
+
+Given discharge curves, we really should cut it off when the battery hits 3.3V:
+https://electronics.stackexchange.com/questions/64490/low-current-battery-monitoring
+
 
 TOUCH
 
+Connect up RDY line to one of the VDD outputs on connector -- need RDY line for interrupts.
 
 PSoC programming worked 
