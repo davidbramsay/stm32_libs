@@ -170,7 +170,7 @@ void autoGain(uint16_t raw_data){
 
 		//if raw value is < ~45% of 0xFFFF and we're not at max gain
 		if (VEML_State.gain != VEML7700_GAIN_2 && raw_data < 0x7332) {
-			switch (VEML_State.gain){
+			switch (VEML_State.integrationTime){
 				case VEML7700_GAIN_1_8:
 					VEML_State.gain = VEML7700_GAIN_1_4;
 					break;
