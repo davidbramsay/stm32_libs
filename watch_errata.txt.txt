@@ -14,16 +14,27 @@ HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_1)
 
 VIBRATION MOTOR
 
+For Nucleo to output on PA8 (CN10 pin 25) TIM1 to Clock Source = Internal Clock, Channel 1 = PWM Generation CH1, Counter Prescaler = 100, Counter Period = 20, Internal Clock Division = No division.  PWM Generation Channel 1 Pulse=10, Fast Mode=Enable.  
+
+Runs off APB2 Timer Clock, (32Mhz)/Prescaler (0) is one counter tick.
+
 Counter Period = 100, Internal Clock Division 4
 
 PWM working -- need to set up TIM and CH in CUBE, including the counter (100) and time_divs (4).
 Set the output pin to match that TIM_CH (here we use timer 3 and channel 2).
-HAL_TIM_Base_Start_IT(&htim3);
-HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1) != HAL_OK) {
+	Error_Handler();
+}
 int duty_cycle = 0;
-htim3.Instance->CCR2 = duty_cycle;
-duty_cycle = (duty_cycle+1)%80;
+while(1){
+htim1.Instance->CCR1 = duty_cycle;
+duty_cycle = (duty_cycle+1)%20;
 HAL_Delay(500);
+}
+
+Vibration motor also has internal drive IC, can just turn on and off.
+
+Pullup, High output level.  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
 
 OLED SCREEN
 
